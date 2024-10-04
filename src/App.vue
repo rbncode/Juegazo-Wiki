@@ -1,27 +1,15 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import Repositorio from "./components/Repo.vue";
+import Navbar from "./components/Navbar.vue";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-
-      <nav> 
-        <RouterLink to="repositorio">Repositorio</RouterLink>
-        <RouterLink to="about">Sobre Juegazo</RouterLink>
-        <RouterLink to="mechanics">Mecánicas</RouterLink>
-      </nav>
-    </div>
-  </header>
-
+  <Navbar />
   <RouterView />
 </template>
 
 <style scoped>
-header {
+main {
   line-height: 1.5;
   max-height: 100vh;
 }
@@ -32,6 +20,8 @@ header {
 }
 
 nav {
+  display: flex;
+  column-gap: 20px;
   width: 100%;
   font-size: 12px;
   text-align: center;
@@ -57,7 +47,7 @@ nav a:first-of-type {
 }
 
 @media (min-width: 1024px) {
-  header {
+  main {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
@@ -67,7 +57,7 @@ nav a:first-of-type {
     margin: 0 2rem 0 0;
   }
 
-  header .wrapper {
+  main .wrapper {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
