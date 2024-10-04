@@ -20,7 +20,12 @@ const router = createRouter({
     {
       path: '/mechanics',
       name: 'mechanics',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/Mecanicas.vue')
+    },
+    {
+      path: '/repositorio',
+      name: 'repositorio',
+      component: () => import('../components/Repo.vue')
     }
   ]
 })
