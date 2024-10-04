@@ -3,7 +3,7 @@ import TheWelcome from '../components/TheWelcome.vue'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="mechanics">
+    <p>Esta página es sobre personajes y controles</p>
+  </div>
 </template>
