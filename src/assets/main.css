@@ -1,5 +1,6 @@
 :root {
   --color-text: #e3eee9;
+  --color-text-hover: #a3f2ce;
   --color-background: #01140d;
   --color-primary: #87f7cb;
   --color-secondary: #0b2aa3;
@@ -17,14 +18,11 @@ body {
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
   font-weight: normal;
 }
 
 #app {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
 }
