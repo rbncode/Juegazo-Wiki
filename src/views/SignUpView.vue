@@ -1,14 +1,16 @@
 <template>
 <main>
     <section class="login">
-        <h1>Inicio de Sesión</h1>
+        <h1>Registro</h1>
         <div class="form">
             <p>Nombre:</p>
             <input placeholder="Nombre de usuario" type="text" class="text" v-model="textUser">
+            <p>Correo:</p>
+            <input placeholder="correo@ejemplo.com" type="text" class="text" v-model="textMail">
             <p>Contraseña:</p>
             <input placeholder="Contraseña" type="text" class="text" v-model="textPass">
         </div>
-        <h4>No tienes cuenta?, <RouterLink to="registro">Registrate</RouterLink></h4>
+        <h4>Ya tienes una cuenta?, <RouterLink to="login">Inicia Sesión</RouterLink></h4>
     </section>
 </main>
 </template>
