@@ -8,13 +8,50 @@
             <p>Contraseña:</p>
             <input placeholder="Contraseña" type="text" class="text" v-model="textPass">
         </div>
+        <button @click="logUser">Iniciar Sesión</button>
         <h4>No tienes cuenta?, <RouterLink to="registro">Registrate</RouterLink></h4>
     </section>
 </main>
 </template>
 
 <script>
-
+export default {
+  data() {
+    return {
+      textUser: '',
+      textPass: ''
+    };
+  },
+  methods: {
+    async logUser() {
+      // Verifica que los campos no estén vacíos
+      if (this.textUser && this.textPass) {
+        try {
+          // Hacer una solicitud GET para verificar el usuario
+          const response = await fetch(`http://localhost:3000/usuarios?username=${this.textUser}&password=${this.textPass}`);
+          const users = await response.json();
+          
+          if (users.length > 0) {
+            // Usuario encontrado
+            alert('Inicio de sesión exitoso');
+            // Guardar el usuario en el localStorage o manejar el estado de la sesión
+            localStorage.setItem('user', JSON.stringify(users[0]));
+            // Redirigir al juego o a la página de inicio
+            this.$router.push('/');
+          } else {
+            // Usuario no encontrado o credenciales incorrectas
+            alert('Usuario o contraseña incorrectos');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('No se pudo conectar al servidor');
+        }
+      } else {
+        alert('Por favor, rellena todos los campos');
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -57,8 +94,22 @@ a{
     border-radius: 8px;
     color: var(--color-primary);
     text-decoration: none;
+    transition: 0.25s;
 }
 a:hover{
     color: var(--color-accent);
+    transition: 0.25s;
+}
+
+button{
+    padding: 10px 15px 10px 15px;
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    border: 0px;
+    transition: 0.25s;
+}
+button:hover{
+    background-color: var(--color-accent);
+    transition: 0.25s;
 }
 </style>

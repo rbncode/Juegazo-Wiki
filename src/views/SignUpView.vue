@@ -5,18 +5,56 @@
         <div class="form">
             <p>Nombre:</p>
             <input placeholder="Nombre de usuario" type="text" class="text" v-model="textUser">
-            <p>Correo:</p>
-            <input placeholder="correo@ejemplo.com" type="text" class="text" v-model="textMail">
             <p>Contraseña:</p>
             <input placeholder="Contraseña" type="text" class="text" v-model="textPass">
         </div>
+        <button @click="registerUser">Registrar</button>
         <h4>Ya tienes una cuenta?, <RouterLink to="login">Inicia Sesión</RouterLink></h4>
     </section>
 </main>
 </template>
 
 <script>
-
+export default {
+  data() {
+    return {
+      textUser: '',
+      textPass: ''
+    };
+  },
+  methods: {
+    async registerUser() {
+      // Verifica que los campos no estén vacíos
+      if (this.textUser && this.textPass) {
+        try {
+          // Hacer una petición POST para registrar el usuario
+          const response = await fetch('http://localhost:3000/usuarios', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: this.textUser,
+              password: this.textPass
+            })
+          });
+          if (response.ok) {
+            alert('Usuario registrado con éxito');
+            // Redirigir a la página de login después de registrar
+            this.$router.push('/login');
+          } else {
+            alert('Error al registrar el usuario');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('No se pudo conectar al servidor');
+        }
+      } else {
+        alert('Por favor, rellena todos los campos');
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -59,8 +97,22 @@ a{
     border-radius: 8px;
     color: var(--color-primary);
     text-decoration: none;
+    transition: 0.25s;
 }
 a:hover{
     color: var(--color-accent);
+    transition: 0.25s;
+}
+
+button{
+    padding: 10px 15px 10px 15px;
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    border: 0px;
+    transition: 0.25s;
+}
+button:hover{
+    background-color: var(--color-accent);
+    transition: 0.25s;
 }
 </style>

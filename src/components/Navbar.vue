@@ -43,10 +43,12 @@
         border-radius: 8px;
         text-decoration: none;
         color: var(--color-text);
+        transition: 0.25s;
     }
 
     a:hover{
         color: var(--color-text-hover);
+        transition: 0.25s;
     }
 
     .login{
