@@ -8,4 +8,10 @@ import Navbar from "./components/Navbar.vue";
   <RouterView />
 </template>
 
-<style scoped></style>
+<style scoped>
+  h1 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+</style>

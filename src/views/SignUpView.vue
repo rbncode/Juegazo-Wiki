@@ -1,15 +1,15 @@
 <template>
 <main>
     <section class="login">
-        <h1>Inicio de Sesión</h1>
+        <h1>Registro</h1>
         <div class="form">
             <p>Nombre:</p>
             <input placeholder="Nombre de usuario" type="text" class="text" v-model="textUser">
             <p>Contraseña:</p>
             <input placeholder="Contraseña" type="text" class="text" v-model="textPass">
         </div>
-        <button @click="logUser">Iniciar Sesión</button>
-        <h4>No tienes cuenta?, <RouterLink to="registro">Registrate</RouterLink></h4>
+        <button @click="registerUser">Registrar</button>
+        <h4>Ya tienes una cuenta?, <RouterLink to="login">Inicia Sesión</RouterLink></h4>
     </section>
 </main>
 </template>
@@ -23,24 +23,27 @@ export default {
     };
   },
   methods: {
-    async logUser() {
+    async registerUser() {
       // Verifica que los campos no estén vacíos
       if (this.textUser && this.textPass) {
         try {
-          // Hacer una solicitud GET para verificar el usuario
-          const response = await fetch(`http://localhost:3000/usuarios?username=${this.textUser}&password=${this.textPass}`);
-          const users = await response.json();
-          
-          if (users.length > 0) {
-            // Usuario encontrado
-            alert('Inicio de sesión exitoso');
-            // Guardar el usuario en el localStorage o manejar el estado de la sesión
-            localStorage.setItem('user', JSON.stringify(users[0]));
-            // Redirigir al juego o a la página de inicio
-            this.$router.push('/');
+          // Hacer una petición POST para registrar el usuario
+          const response = await fetch('http://localhost:3000/usuarios', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: this.textUser,
+              password: this.textPass
+            })
+          });
+          if (response.ok) {
+            alert('Usuario registrado con éxito');
+            // Redirigir a la página de login después de registrar
+            this.$router.push('/login');
           } else {
-            // Usuario no encontrado o credenciales incorrectas
-            alert('Usuario o contraseña incorrectos');
+            alert('Error al registrar el usuario');
           }
         } catch (error) {
           console.error('Error:', error);
