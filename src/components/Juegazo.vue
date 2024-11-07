@@ -40,47 +40,7 @@ document.getElementById(
 ).style.backgroundImage = `url(${player2Image})`; // Optional: to ensure the image fits
 
 //Objeto Jugador -- Listo
-class Player {
-  constructor(name, health, damage, posX, posY) {
-    this.name = name;
-    this.health = health;
-    this.maxhealth = health;
-    this.damage = damage;
-    this.x = posX;
-    this.y = posY;
-  }
 
-  //Verifica si el personaje esta vivo
-  isAlive() {
-    return this.health > 0;
-  }
-
-  //Retorna la información actual del personaje
-  status() {
-    return `${this.name} - HP ${this.health}/${this.maxhealth}`;
-  }
-
-  getName() {
-    return `${this.name}`;
-  }
-
-  getHealth() {
-    return `${this.health}`;
-  }
-
-  setX(posX) {
-    this.x = posX;
-  }
-  getX() {
-    return `${this.x}`;
-  }
-  setY(posY) {
-    this.y = posY;
-  }
-  getY() {
-    return `${this.y}`;
-  }
-}
 const area = document.getElementById("area");
 console.log(document.getElementById("area").offsetWidth);
 const player1 = new Player(
@@ -98,8 +58,12 @@ const player2 = new Player(
   Number(area.offsetHeight / 2) - 25
 );
 
-document.querySelector(".player-1 .hp").textContent = `${player1.health}/${player1.maxhealth}`;
-document.querySelector(".player-2 .hp").textContent = `${player2.health}/${player2.maxhealth}`;
+document.querySelector(
+  ".player-1 .hp"
+).textContent = `${player1.health}/${player1.maxhealth}`;
+document.querySelector(
+  ".player-2 .hp"
+).textContent = `${player2.health}/${player2.maxhealth}`;
 
 //Fisicas Bala -- Listo
 
@@ -239,7 +203,9 @@ function actualizarBala() {
       impactoSFX.currentTime = 0;
       impactoSFX.play();
       console.log(
-        `${player1.getName()} recibió un disparo. HP restante: ${player1.health}`
+        `${player1.getName()} recibió un disparo. HP restante: ${
+          player1.health
+        }`
       );
     }
 
@@ -252,7 +218,9 @@ function actualizarBala() {
       impactoSFX.currentTime = 0;
       impactoSFX.play();
       console.log(
-        `${player2.getName()} recibió un disparo. HP restante: ${player2.health}`
+        `${player2.getName()} recibió un disparo. HP restante: ${
+          player2.health
+        }`
       );
     }
 
@@ -387,38 +355,37 @@ function reproducir() {
 </script>
 
 <template>
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/juego.css" />
-    <title>Juego Disparo</title>
-  </head>
-  <body>
-    <div class="health-container">
-      <div class="info player-1">
-        <div class="health-bar">
-          <div id="p1-health-bar" class="health"></div>
-          <div id="p1-health-value" class="hp"></div>
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="stylesheet" href="/styles/juego.css" />
+      <title>Juego Disparo</title>
+    </head>
+    <body>
+      <div class="health-container">
+        <div class="info player-1">
+          <div class="health-bar">
+            <div id="p1-health-bar" class="health"></div>
+            <div id="p1-health-value" class="hp"></div>
+          </div>
+          <div class="name">Player 1</div>
         </div>
-        <div class="name">Player 1</div>
-      </div>
-      <div class="info player-2">
-        <div class="health-bar">
-          <div id="p2-health-bar" class="health"></div>
-          <div id="p2-health-value" class="hp"></div>
+        <div class="info player-2">
+          <div class="health-bar">
+            <div id="p2-health-bar" class="health"></div>
+            <div id="p2-health-value" class="hp"></div>
+          </div>
+          <div class="name">Player 2</div>
         </div>
-        <div class="name">Player 2</div>
       </div>
-    </div>
-    <div id="area" class="game">
-      <div id="player-1" class="player"></div>
-      <div id="player-2" class="player"></div>
-    </div>
-  </body>
-</html>
-
+      <div id="area" class="game">
+        <div id="player-1" class="player"></div>
+        <div id="player-2" class="player"></div>
+      </div>
+    </body>
+  </html>
 </template>
 
 <style>
@@ -525,7 +492,7 @@ body {
   background-image: url("../img/commando2.png");
 }
 
-.bala{
+.bala {
   width: 12px;
   height: 5px;
   position: absolute;
