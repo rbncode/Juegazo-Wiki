@@ -25,6 +25,9 @@
 <script>
 import HealthBar from "./HealthBar.vue";
 import Player from "./Player.js";
+import disparoSound from "@/assets/audio/disparo.ogg";
+import shatterLego from "@/assets/audio/explosion.ogg";
+import impactoSound from "@/assets/audio/impacto.ogg";
 import Bullet from "./Bullet.js";
 
 export default {
@@ -173,6 +176,18 @@ export default {
       requestAnimationFrame(this.update);
     },
 
+    playShootingSound() {
+      const shootingSound = new Audio(disparoSound);
+      shootingSound.play();
+    },
+    playDeathSound() {
+      const deathSound = new Audio(shatterLego);
+      deathSound.play();
+    },
+    playHitSound() {
+      const hitSound = new Audio(impactoSound);
+      hitSound.play();
+    },
     disparo(player, direction, sprite, lastShotTime) {
       const currentTime = Date.now();
       if (currentTime - lastShotTime >= this.shotCooldown) {
@@ -180,6 +195,8 @@ export default {
         const yBullet = player.y + 20;
         const bullet = new Bullet(xBullet, yBullet, direction, sprite);
         const bulletElement = bullet.mostrar();
+
+        this.playShootingSound();
         this.balas.push({ bullet, element: bulletElement });
 
         this.$refs.area.appendChild(bulletElement);
@@ -247,6 +264,7 @@ export default {
         console.log(`Player 2 Health: ${this.player2Health}`);
       }
       player.takeDamage(10);
+      this.playHitSound();
 
       if (!player.isAlive()) {
         this.verificarSiJugadorMuere(player);
@@ -264,6 +282,7 @@ export default {
       explosion.style.top = `${posY - 63}px`;
       document.querySelector(".game").appendChild(explosion);
 
+      this.playDeathSound();
       setTimeout(() => {
         explosion.remove();
       }, 1700);
@@ -292,7 +311,7 @@ export default {
         setTimeout(() => {
           alert(`${jugador.getName()} Ha Muerto.`);
           setTimeout(() => {
-            this.$router.push("/selector");
+            this.$router.push("/resultados");
           }, 500);
         }, 1750);
       }
