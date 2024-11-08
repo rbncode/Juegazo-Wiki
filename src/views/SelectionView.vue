@@ -40,6 +40,7 @@
           id="player1-name"
           v-model="player1Name"
           placeholder="Player 1 Name"
+          readonly
         />
         <input
           type="text"
@@ -58,7 +59,7 @@ export default {
   data() {
     return {
       // Player names
-      player1Name: "",
+      player1Name: localStorage.getItem('user'),
       player2Name: "",
       // Track the current index for each carousel
       currentIndex: [0, 0],
@@ -102,7 +103,6 @@ export default {
       const player1Character = this.characters[0][this.currentIndex[0]];
       const player2Character = this.characters[1][this.currentIndex[1]];
 
-      localStorage.setItem("player1Name", this.player1Name);
       localStorage.setItem("player2Name", this.player2Name);
       localStorage.setItem("player1Character", player1Character);
       localStorage.setItem("player2Character", player2Character);

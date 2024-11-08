@@ -47,7 +47,7 @@ export default {
       keys: {},
       player1Health: 100,
       player2Health: 100,
-      player1Name: localStorage.getItem("player1Name") || "Player 1",
+      player1Name: localStorage.getItem('user') || "Player 1",
       player2Name: localStorage.getItem("player2Name") || "Player 2",
     };
   },
@@ -311,7 +311,7 @@ export default {
         setTimeout(() => {
           alert(`${jugador.getName()} Ha Muerto.`);
           setTimeout(() => {
-            this.$router.push("/resultados");
+            this.$router.push("/selector");
           }, 500);
         }, 1750);
       }

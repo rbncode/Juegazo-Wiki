@@ -35,7 +35,8 @@ export default {
             // Usuario encontrado
             alert('Inicio de sesión exitoso');
             // Guardar el usuario en el localStorage o manejar el estado de la sesión
-            localStorage.setItem('user', JSON.stringify(users[0]));
+            localStorage.setItem('user', this.textUser);
+            console.log(localStorage.getItem('user'));
             // Redirigir al juego o a la página de inicio
             this.$router.push('/');
           } else {
