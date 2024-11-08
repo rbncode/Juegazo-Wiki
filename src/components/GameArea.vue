@@ -1,17 +1,37 @@
 <template>
   <div class="game">
+    <audio ref="backgroundMusic" loop autoplay>
+      <source
+        src="@/assets/audio/Heaven Pierce Her - Versus.mp3"
+        type="audio/mp3"
+      />
+      Your browser does not support the audio element.
+    </audio>
+
     <div id="area" ref="area">
       <div id="player-1" class="player" ref="player1"></div>
       <div id="player-2" class="player" ref="player2"></div>
     </div>
+
+    <!-- Health Bar Section -->
+    <HealthBar
+      :player1Health="player1Health"
+      :player2Health="player2Health"
+      :player1Name="player1Name"
+      :player2Name="player2Name"
+    />
   </div>
 </template>
 
 <script>
+import HealthBar from "./HealthBar.vue"; // Import health bar component
 import Player from "./Player.js";
 import Bullet from "./Bullet.js";
 
 export default {
+  components: {
+    HealthBar,
+  },
   data() {
     return {
       juego: true,
@@ -23,6 +43,10 @@ export default {
       ultimoDisparoP2: 0,
       playerSpeed: 5,
       keys: {},
+      player1Health: 100, // Starting health for player 1
+      player2Health: 100, // Starting health for player 2
+      player1Name: localStorage.getItem("player1Name") || "Player 1",
+      player2Name: localStorage.getItem("player2Name") || "Player 2",
     };
   },
   mounted() {
@@ -33,18 +57,17 @@ export default {
   methods: {
     initializePlayers() {
       const area = this.$refs.area;
-      const player1Name = localStorage.getItem("player1Name");
-      const player2Name = localStorage.getItem("player2Name");
 
       this.player1 = new Player(
-        player1Name,
+        this.player1Name,
         150,
         5,
         area.offsetWidth / 10 - 25,
         area.offsetHeight / 2 - 25
       );
+
       this.player2 = new Player(
-        player2Name,
+        this.player2Name,
         150,
         5,
         area.offsetWidth - area.offsetWidth / 10 - 25,
@@ -60,12 +83,23 @@ export default {
     },
     getPlayerImage(player) {
       const character = localStorage.getItem(player);
-      return character === "commando"
-        ? "img/commando.png"
-        : character === "marco"
-        ? "img/marco.png"
-        : "img/tarma.png";
+      const playerSuffix = player === "player2Character" ? "2" : "";
+      const imagePath =
+        character === "commando"
+          ? new URL(
+              `../assets/img/commando${playerSuffix}.png`,
+              import.meta.url
+            ).href
+          : character === "marco"
+          ? new URL(`../assets/img/marco${playerSuffix}.png`, import.meta.url)
+              .href
+          : new URL(`../assets/img/tarma${playerSuffix}.png`, import.meta.url)
+              .href;
+
+      console.log(`Image path for ${player}:`, imagePath);
+      return imagePath;
     },
+
     setupEventListeners() {
       window.addEventListener("keydown", (e) => {
         this.keys[e.key.toLowerCase()] = true;
@@ -74,12 +108,12 @@ export default {
         this.keys[e.key.toLowerCase()] = false;
       });
     },
+
     update() {
       if (!this.juego) return;
 
       const area = this.$refs.area;
 
-      // Player 1 movement
       if (this.keys["w"] && this.player1.y > 0) {
         this.player1.y -= this.playerSpeed;
       }
@@ -96,12 +130,11 @@ export default {
         this.ultimoDisparoP1 = this.disparo(
           this.player1,
           1,
-          "../img/BulletP1.png",
+          new URL("@/assets/img/BulletP1.png", import.meta.url).href,
           this.ultimoDisparoP1
         );
       }
 
-      // Player 2 movement
       if (this.keys["i"] && this.player2.y > 0) {
         this.player2.y -= this.playerSpeed;
       }
@@ -118,49 +151,108 @@ export default {
         this.ultimoDisparoP2 = this.disparo(
           this.player2,
           -1,
-          "../img/BulletP2.png",
+          new URL("@/assets/img/BulletP2.png", import.meta.url).href,
           this.ultimoDisparoP2
         );
       }
 
-      // Update player positions in DOM
+      if (!this.player1.isAlive()) {
+        this.juego = false;
+        this.verificarSiJugadorMuere(this.player1);
+      } else if (!this.player2.isAlive()) {
+        this.juego = false;
+        this.verificarSiJugadorMuere(this.player2);
+      }
+
       this.$refs.player1.style.left = `${this.player1.x}px`;
       this.$refs.player1.style.top = `${this.player1.y}px`;
       this.$refs.player2.style.left = `${this.player2.x}px`;
       this.$refs.player2.style.top = `${this.player2.y}px`;
 
+      this.updateBullets();
+
       requestAnimationFrame(this.update);
     },
+
     disparo(player, direction, sprite, lastShotTime) {
       const currentTime = Date.now();
       if (currentTime - lastShotTime >= this.shotCooldown) {
-        // Bullet creation logic
         const xBullet = player.x + (direction === 1 ? 50 : -10);
         const yBullet = player.y + 20;
         const bullet = new Bullet(xBullet, yBullet, direction, sprite);
         const bulletElement = bullet.mostrar();
         this.balas.push({ bullet, element: bulletElement });
 
-        return currentTime; // Update last shot time
+        return currentTime;
       }
       return lastShotTime;
     },
+
     verificarColision(bala, jugador) {
       const jugadorWidth = 50;
       const jugadorHeight = 50;
 
-      return (
+      if (
         bala.x < jugador.x + jugadorWidth &&
         bala.x + 12 > jugador.x &&
         bala.y < jugador.y + jugadorHeight &&
         bala.y + 5 > jugador.y
-      );
+      ) {
+        return true;
+      }
+
+      return false;
+    },
+
+    updateBullets() {
+      this.balas.forEach((bulletObj, index) => {
+        bulletObj.bullet.move();
+        bulletObj.element.style.left = `${bulletObj.bullet.x}px`;
+        bulletObj.element.style.top = `${bulletObj.bullet.y}px`;
+
+        if (this.verificarColision(bulletObj.bullet, this.player1)) {
+          this.handleBulletCollision(
+            bulletObj.bullet,
+            bulletObj.element,
+            this.player1
+          );
+        } else if (this.verificarColision(bulletObj.bullet, this.player2)) {
+          this.handleBulletCollision(
+            bulletObj.bullet,
+            bulletObj.element,
+            this.player2
+          );
+        }
+
+        if (bulletObj.bullet.isOffScreen()) {
+          bulletObj.element.remove();
+          this.balas.splice(index, 1);
+        }
+      });
+    },
+
+    handleBulletCollision(bullet, bulletElement, player) {
+      bulletElement.remove();
+      const bulletIndex = this.balas.findIndex((b) => b.bullet === bullet);
+      if (bulletIndex > -1) {
+        this.balas.splice(bulletIndex, 1);
+      }
+      if (player === this.player1) {
+        this.player1Health = Math.max(0, this.player1Health - 10);
+      } else {
+        this.player2Health = Math.max(0, this.player2Health - 10);
+      }
+
+      this.verificarSiJugadorMuere(player);
     },
     mostrarExplosion(posX, posY) {
       const explosion = document.createElement("img");
-      explosion.src = "../img/explosion.gif";
+      explosion.src = new URL(
+        "@/assets/img/explosion.gif",
+        import.meta.url
+      ).href;
       explosion.classList.add("explosion");
-      explosion.style.position = "fixed";
+      explosion.style.position = "absolute";
       explosion.style.left = `${posX - 56}px`;
       explosion.style.top = `${posY - 63}px`;
       document.querySelector(".game").appendChild(explosion);
@@ -169,20 +261,24 @@ export default {
         explosion.remove();
       }, 1700);
     },
-    limpiarBalas() {
-      this.balas.forEach((balaObj) => {
-        balaObj.element.remove();
-      });
-      this.balas = [];
-    },
+
     verificarSiJugadorMuere(jugador) {
+      console.log(
+        "Checking death for:",
+        jugador.getName(),
+        "Alive?",
+        jugador.isAlive()
+      );
       if (!jugador.isAlive()) {
         this.juego = false;
         this.limpiarBalas();
         this.mostrarExplosion(jugador.x, jugador.y);
+
         setTimeout(() => {
           alert(`${jugador.getName()} Ha Muerto.`);
-          window.location.href = "../index.html";
+          setTimeout(() => {
+            this.$router.push("/selector");
+          }, 500);
         }, 1750);
       }
     },

@@ -1,16 +1,25 @@
 <template>
   <div class="health-container">
+    <!-- Player 1 Health Info -->
     <div class="info player-1">
       <div class="health-bar">
-        <div id="p1-health-bar" class="health"></div>
-        <div id="p1-health-value" class="hp"></div>
+        <div
+          class="health"
+          :style="{ width: player1HealthPercentage + '%' }"
+        ></div>
+        <div class="hp">{{ player1Health }} / {{ maxHealth }}</div>
       </div>
       <div class="name">{{ player1Name }}</div>
     </div>
+
+    <!-- Player 2 Health Info -->
     <div class="info player-2">
       <div class="health-bar">
-        <div id="p2-health-bar" class="health"></div>
-        <div id="p2-health-value" class="hp"></div>
+        <div
+          class="health"
+          :style="{ width: player2HealthPercentage + '%' }"
+        ></div>
+        <div class="hp">{{ player2Health }} / {{ maxHealth }}</div>
       </div>
       <div class="name">{{ player2Name }}</div>
     </div>
@@ -19,19 +28,23 @@
 
 <script>
 export default {
+  props: {
+    player1Health: Number,
+    player2Health: Number,
+    player1Name: String,
+    player2Name: String,
+  },
   data() {
     return {
-      player1Name: localStorage.getItem("player1Name") || "Player 1",
-      player2Name: localStorage.getItem("player2Name") || "Player 2",
+      maxHealth: 100,
     };
   },
-  methods: {
-    updateHealth(player, healthBarId, healthTextId) {
-      const healthBar = document.getElementById(healthBarId);
-      const healthText = document.getElementById(healthTextId);
-      const healthPercentage = (player.health / player.maxhealth) * 100;
-      healthBar.style.width = healthPercentage + "%";
-      healthText.innerHTML = `${player.health}/${player.maxhealth}`;
+  computed: {
+    player1HealthPercentage() {
+      return (this.player1Health / this.maxHealth) * 100;
+    },
+    player2HealthPercentage() {
+      return (this.player2Health / this.maxHealth) * 100;
     },
   },
 };
@@ -69,10 +82,10 @@ export default {
   background-color: #555;
   border: white;
   transform: skew(-20deg);
+  position: relative;
 }
 
 .health {
-  width: 100%;
   height: 100%;
   background-color: rgb(76, 221, 76);
   transition: width 0.3s ease-in-out;
@@ -85,18 +98,12 @@ export default {
   transform: translate(-50%, -50%);
   z-index: 1;
   font-weight: bold;
+  color: white;
 }
 
 .name {
   margin-top: 8px;
   font-size: 18px;
   font-weight: bold;
-}
-
-.player {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  background-size: cover;
 }
 </style>
