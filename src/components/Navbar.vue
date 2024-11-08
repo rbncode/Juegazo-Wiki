@@ -4,16 +4,36 @@
             <RouterLink to="repositorio">Repositorio</RouterLink>
             <RouterLink to="about">Sobre Juegazo</RouterLink>
             <RouterLink to="mechanics">Mecánicas</RouterLink>
+            <!-- Mostrar el botón "Jugar" solo si el usuario ha iniciado sesión -->
+            <RouterLink v-if="isLoggedIn" to="selector">Jugar</RouterLink>
         </div>
-        <RouterLink to="login" class="login">
+        <RouterLink v-if="!isLoggedIn" to="login" class="login">
             <img id="svg-perfil" src="/src/assets/SVGs/profile-icon.svg" alt="icono perfil">
             <p>Login</p>
         </RouterLink>
+        <a v-if="isLoggedIn" @click="logOut">Cerrar Sesión</a>
     </nav>
 </template>
 
 <script>
-
+export default {
+    data() {
+        return {
+            isLoggedIn: false
+        };
+    },
+    mounted() {
+        // Verificar si el usuario está logueado
+        this.isLoggedIn = !!localStorage.getItem('user');
+    },
+    methods: {
+        logOut() {
+            localStorage.removeItem('user'); // Eliminar el usuario del localStorage
+            this.isLoggedIn = false; // Actualizar el estado de inicio de sesión
+            this.$router.push('/'); // Redirigir al inicio
+        }
+    }
+};
 </script>
 
 <style scoped>

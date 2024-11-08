@@ -21,7 +21,7 @@ export default class Bullet {
   }
 
   move() {
-    this.x += this.direction * 5;
+    this.x += this.direction * 10;
   }
 
   isOffScreen() {

@@ -60,7 +60,7 @@ export default {
 
       this.player1 = new Player(
         this.player1Name,
-        150,
+        100,
         5,
         area.offsetWidth / 10 - 25,
         area.offsetHeight / 2 - 25
@@ -68,7 +68,7 @@ export default {
 
       this.player2 = new Player(
         this.player2Name,
-        150,
+        100,
         5,
         area.offsetWidth - area.offsetWidth / 10 - 25,
         area.offsetHeight / 2 - 25
@@ -242,6 +242,7 @@ export default {
       } else {
         this.player2Health = Math.max(0, this.player2Health - 10);
       }
+      console.log(player1.health);
 
       this.verificarSiJugadorMuere(player);
     },
@@ -269,7 +270,7 @@ export default {
         "Alive?",
         jugador.isAlive()
       );
-      if (!jugador.isAlive()) {
+      if (jugador.isAlive() == false) {
         this.juego = false;
         this.limpiarBalas();
         this.mostrarExplosion(jugador.x, jugador.y);
@@ -286,7 +287,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 * {
   padding: 0;
   margin: 0;

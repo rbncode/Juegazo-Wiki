@@ -42,4 +42,17 @@ const router = createRouter({
   ],
 });
 
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/registro', '/repositorio', '/mechanics', '/about']; // Rutas que no requieren autenticación
+  const authRequired = !publicPages.includes(to.path); // Requiere autenticación si la página no está en publicPages
+  const loggedIn = localStorage.getItem('user'); // Verificar si hay un usuario autenticado
+
+  if (authRequired && !loggedIn) {
+    // Si se requiere autenticación y no hay usuario autenticado, redirigir al login
+    return next('/login');
+  }
+
+  next(); // Continuar si el usuario está autenticado o la ruta es pública
+});
+
 export default router;
