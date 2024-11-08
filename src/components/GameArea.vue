@@ -62,7 +62,7 @@ export default {
 
       this.player1 = new Player(
         this.player1Name,
-        150,
+        100,
         5,
         area.offsetWidth / 10 - 25,
         area.offsetHeight / 2 - 25
@@ -278,14 +278,14 @@ export default {
       ).href;
       explosion.classList.add("explosion");
       explosion.style.position = "absolute";
-      explosion.style.left = `${posX - 56}px`;
-      explosion.style.top = `${posY - 63}px`;
+      explosion.style.left = `${posX+40}px`;
+      explosion.style.top = `${posY+10}px`;
       document.querySelector(".game").appendChild(explosion);
 
       this.playDeathSound();
       setTimeout(() => {
         explosion.remove();
-      }, 1700);
+      }, 1750);
     },
 
     limpiarBalas() {
@@ -331,7 +331,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 100vh;  
 }
 
 #area {

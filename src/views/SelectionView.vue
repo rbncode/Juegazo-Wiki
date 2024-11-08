@@ -1,47 +1,55 @@
 <template>
-  <div>
-    <!-- Player 1 Carousel -->
-    <div class="carousel-container">
-      <button @click="navigateCarousel(0, 'prev')" id="prev">Previous</button>
-      <div class="carousel" ref="carousel1">
-        <img
-          v-for="(character, index) in characters[0]"
-          :key="`player1-${index}`"
-          :src="getCharacterImage(character)"
-          class="carousel-image"
+  <div class="body">
+    <div class="carruseles">
+      <!-- Player 1 Carousel -->
+      <div class="carousel-container">
+        <button @click="navigateCarousel(0, 'prev')" id="prev">Previous</button>
+        <div class="limit">
+          <div class="carousel" ref="carousel1"> <!-- Player 1 -->
+            <img
+              v-for="(character, index) in characters[0]"
+              :key="`player1-${index}`"
+              :src="getCharacterImage(character)"
+              class="carousel-image"
+            />
+          </div>
+        </div>
+        <button @click="navigateCarousel(0, 'next')" id="next">Next</button>
+      </div>
+      <!-- Player 2 Carousel -->
+      <div class="carousel-container">
+        <button @click="navigateCarousel(1, 'prev')" id="prev">Previous</button>
+        <div class="limit">
+          <div class="carousel" ref="carousel2"> <!-- Player 2 -->
+            <img
+              v-for="(character, index) in characters[1]"
+              :key="`player2-${index}`"
+              :src="getCharacterImage(character)"
+              class="carousel-image"
+            />
+          </div>
+        </div>
+        <button @click="navigateCarousel(1, 'next')" id="next">Next</button>
+      </div>
+    </div>
+    <div class="inicioJuego">
+      <!-- Player name inputs and start button -->
+      <div class="nombres">
+        <input
+          type="text"
+          id="player1-name"
+          v-model="player1Name"
+          placeholder="Player 1 Name"
+        />
+        <input
+          type="text"
+          id="player2-name"
+          v-model="player2Name"
+          placeholder="Player 2 Name"
         />
       </div>
-      <button @click="navigateCarousel(0, 'next')" id="next">Next</button>
+      <button @click="startGame">Start playing!</button>
     </div>
-
-    <!-- Player 2 Carousel -->
-    <div class="carousel-container">
-      <button @click="navigateCarousel(1, 'prev')" id="prev">Previous</button>
-      <div class="carousel" ref="carousel2">
-        <img
-          v-for="(character, index) in characters[1]"
-          :key="`player2-${index}`"
-          :src="getCharacterImage(character)"
-          class="carousel-image"
-        />
-      </div>
-      <button @click="navigateCarousel(1, 'next')" id="next">Next</button>
-    </div>
-
-    <!-- Player name inputs and start button -->
-    <input
-      type="text"
-      id="player1-name"
-      v-model="player1Name"
-      placeholder="Player 1 Name"
-    />
-    <input
-      type="text"
-      id="player2-name"
-      v-model="player2Name"
-      placeholder="Player 2 Name"
-    />
-    <button @click="startGame">Start playing!</button>
   </div>
 </template>
 
@@ -81,12 +89,9 @@ export default {
       this.updateCarousel(playerIndex);
     },
     updateCarousel(carouselIndex) {
-      // Adjust transform based on current index
-      const translateValue =
-        this.currentIndex[carouselIndex] * -this.imageWidth;
-      this.$refs[
-        `carousel${carouselIndex + 1}`
-      ].style.transform = `translateX(${translateValue}px)`;
+      const carousel = this.$refs[`carousel${carouselIndex + 1}`];  // Corregir el nombre del ref
+      const translateValue = this.currentIndex[carouselIndex] * -this.imageWidth;
+      carousel.style.transform = `translateX(${translateValue}px)`; // Aplicar el estilo correctamente
     },
     getCharacterImage(character) {
       // Generate character image URL
@@ -112,43 +117,58 @@ export default {
 <style scoped>
 .carousel {
   display: flex;
-  overflow: hidden;
-  width: 200px; /* Adjust width as needed */
-}
-.carousel-image {
+  flex-direction: row;
+  align-items:start;
   width: 200px;
   height: auto;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #1d1d1d;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  overflow: hidden;
-  position: relative;
+.carousel-item img {
+  max-width: 100%; /* Los sprites no se expanden más allá de su contenedor */
+  height: auto;
 }
 
-.container {
+.body {
+  font-family: Arial, sans-serif;
+  color: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 1200px;
-  height: 100%;
-  padding: 20px;
+  min-height: 80vh;
+  row-gap: 40px;
+}
+
+.carruseles{
+  display: flex;
+  flex-direction: row;
+  column-gap: 50px;
+}
+
+.limit{
+  overflow: hidden;
 }
 
 .carousel-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   max-width: 1200px;
   margin-bottom: 30px;
+  position: relative;
+}
+
+.inicioJuego{
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  align-items: center;
+}
+
+.nombres{
+  display: flex;
+  column-gap: 30px;
 }
 
 .wrapper i.button {
@@ -238,9 +258,12 @@ button {
   background-color: #bbeff4;
   border: none;
   border-radius: 20px;
-  width: 150px;
+  width: 100px;
   height: 30px;
   justify-content: center;
   text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10; /* Asegura que el botón esté encima del carrusel */
 }
 </style>

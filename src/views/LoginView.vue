@@ -8,7 +8,7 @@
             <p>Contraseña:</p>
             <input placeholder="Contraseña" type="text" class="text" v-model="textPass">
         </div>
-        <button @click="logUser">Iniciar Sesión</button>
+        <button @click="logUser" >Iniciar Sesión</button>
         <h4>No tienes cuenta?, <RouterLink to="registro">Registrate</RouterLink></h4>
     </section>
 </main>
