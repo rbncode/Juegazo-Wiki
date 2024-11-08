@@ -12,18 +12,15 @@ export default class Player {
     return this.health > 0;
   }
 
-  setX(newX) {
-    this.x = newX;
-  }
-
-  setY(newY) {
-    this.y = newY;
-  }
-
   takeDamage(damageAmount) {
     this.health -= damageAmount;
+    console.log(
+      `${this.name} took damage: ${damageAmount}. Health now: ${this.health}`
+    );
+
     if (this.health <= 0) {
       this.alive = false;
+      console.log(`${this.name} has died.`);
     }
   }
 

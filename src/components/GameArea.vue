@@ -13,7 +13,6 @@
       <div id="player-2" class="player" ref="player2"></div>
     </div>
 
-    <!-- Health Bar Section -->
     <HealthBar
       :player1Health="player1Health"
       :player2Health="player2Health"
@@ -24,7 +23,7 @@
 </template>
 
 <script>
-import HealthBar from "./HealthBar.vue"; // Import health bar component
+import HealthBar from "./HealthBar.vue";
 import Player from "./Player.js";
 import Bullet from "./Bullet.js";
 
@@ -43,8 +42,8 @@ export default {
       ultimoDisparoP2: 0,
       playerSpeed: 5,
       keys: {},
-      player1Health: 100, // Starting health for player 1
-      player2Health: 100, // Starting health for player 2
+      player1Health: 100,
+      player2Health: 100,
       player1Name: localStorage.getItem("player1Name") || "Player 1",
       player2Name: localStorage.getItem("player2Name") || "Player 2",
     };
@@ -60,7 +59,7 @@ export default {
 
       this.player1 = new Player(
         this.player1Name,
-        100,
+        150,
         5,
         area.offsetWidth / 10 - 25,
         area.offsetHeight / 2 - 25
@@ -130,7 +129,7 @@ export default {
         this.ultimoDisparoP1 = this.disparo(
           this.player1,
           1,
-          new URL("@/assets/img/BulletP1.png", import.meta.url).href,
+          new URL("../assets/img/BulletP1.png", import.meta.url).href,
           this.ultimoDisparoP1
         );
       }
@@ -151,7 +150,7 @@ export default {
         this.ultimoDisparoP2 = this.disparo(
           this.player2,
           -1,
-          new URL("@/assets/img/BulletP2.png", import.meta.url).href,
+          new URL("../assets/img/BulletP2.png", import.meta.url).href,
           this.ultimoDisparoP2
         );
       }
@@ -182,6 +181,8 @@ export default {
         const bullet = new Bullet(xBullet, yBullet, direction, sprite);
         const bulletElement = bullet.mostrar();
         this.balas.push({ bullet, element: bulletElement });
+
+        this.$refs.area.appendChild(bulletElement);
 
         return currentTime;
       }
@@ -237,14 +238,19 @@ export default {
       if (bulletIndex > -1) {
         this.balas.splice(bulletIndex, 1);
       }
+
       if (player === this.player1) {
         this.player1Health = Math.max(0, this.player1Health - 10);
+        console.log(`Player 1 Health: ${this.player1Health}`);
       } else {
         this.player2Health = Math.max(0, this.player2Health - 10);
+        console.log(`Player 2 Health: ${this.player2Health}`);
       }
-      console.log(player1.health);
+      player.takeDamage(10);
 
-      this.verificarSiJugadorMuere(player);
+      if (!player.isAlive()) {
+        this.verificarSiJugadorMuere(player);
+      }
     },
     mostrarExplosion(posX, posY) {
       const explosion = document.createElement("img");
@@ -263,6 +269,13 @@ export default {
       }, 1700);
     },
 
+    limpiarBalas() {
+      this.balas.forEach((balaObj) => {
+        balaObj.element.remove(); // Elimina el elemento del DOM
+      });
+      this.balas = []; // Reinicia el array de balas
+    },
+
     verificarSiJugadorMuere(jugador) {
       console.log(
         "Checking death for:",
@@ -270,7 +283,8 @@ export default {
         "Alive?",
         jugador.isAlive()
       );
-      if (jugador.isAlive() == false) {
+
+      if (!jugador.isAlive()) {
         this.juego = false;
         this.limpiarBalas();
         this.mostrarExplosion(jugador.x, jugador.y);

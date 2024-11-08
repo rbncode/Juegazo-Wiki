@@ -10,14 +10,13 @@ export default class Bullet {
   }
 
   mostrar() {
-    const bulletElement = document.createElement("div");
-    bulletElement.classList.add("bala");
-    bulletElement.style.backgroundImage = `url(${this.sprite})`;
-    bulletElement.style.left = `${this.x}px`;
-    bulletElement.style.top = `${this.y}px`;
-    document.querySelector("#area").appendChild(bulletElement);
-
-    return bulletElement;
+    this.element = document.createElement("img");
+    this.element.src = this.sprite;
+    this.element.style.position = "absolute";
+    this.element.style.left = `${this.x}px`;
+    this.element.style.top = `${this.y}px`;
+    this.element.classList.add("bala");
+    return this.element;
   }
 
   move() {
